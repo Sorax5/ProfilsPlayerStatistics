@@ -1,0 +1,6 @@
+name: ProfilsPlayerStatistics
+version: '${project.version}'
+main: fr.soraxdubbing.profilsplayerstatistics.ProfilsPlayerStatistics
+depend: [ ProfilsManagerCore ]
+authors: [ SoraxDubbing ]
+description: Addon for ProfilsManagerCore to support player stats
