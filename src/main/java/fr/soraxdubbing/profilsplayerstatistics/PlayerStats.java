@@ -1,7 +1,7 @@
 package fr.soraxdubbing.profilsplayerstatistics;
 
-import fr.soraxdubbing.profilsmanagercore.Addon.AddonData;
-import fr.soraxdubbing.profilsmanagercore.Manager.ItemManager;
+import fr.soraxdubbing.profilsmanagercore.addon.AddonData;
+import fr.soraxdubbing.profilsmanagercore.manager.ItemManager;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -17,6 +17,9 @@ public class PlayerStats extends AddonData {
 
     private List<String> enderChest;
     private List<String> inventory;
+    private List<String> armor;
+    private List<String> storage;
+    private List<String> extra;
     private double maximumHealth;
     private double actualHealth;
     private int foodLevel;
@@ -33,6 +36,9 @@ public class PlayerStats extends AddonData {
         super("playerstats");
         this.enderChest = new ArrayList<>();
         this.inventory = new ArrayList<>();
+        this.armor = new ArrayList<>();
+        this.storage = new ArrayList<>();
+        this.extra = new ArrayList<>();
         this.maximumHealth = 20;
         this.actualHealth = 20;
         this.foodLevel = 20;
@@ -45,19 +51,19 @@ public class PlayerStats extends AddonData {
     public void updateAddonData(Player player, JavaPlugin javaPlugin) {
         this.setLastLocation(player.getLocation());
 
-        ItemStack[] inventory = player.getInventory().getContents();
-        if (inventory != null) {
-            this.setInventory(inventory);
-        }
+        this.setInventory(player.getInventory().getContents());
 
-        ItemStack[] enderchest = player.getEnderChest().getContents();
-        if (enderchest != null) {
-            this.setEnderChest(enderchest);
-        }
+        this.setEnderChest(player.getEnderChest().getContents());
+
+        this.setArmor(player.getInventory().getArmorContents());
+
+        this.setStorage(player.getInventory().getStorageContents());
+
+        this.setExtra(player.getInventory().getExtraContents());
 
         this.setActualHealth(player.getHealth());
 
-        this.setMaximumHealth(player.getMaxHealth());
+        this.setMaximumHealth(player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue());
 
         this.setGameMode(player.getGameMode());
 
@@ -69,17 +75,19 @@ public class PlayerStats extends AddonData {
         player.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(this.getMaximumHealth());
         player.setHealth(this.getActualHealth());
 
-        ItemStack[] inventory = this.getInventory();
-        if (inventory != null) {
-            player.getInventory().setContents(inventory);
-        }
+        player.getInventory().setContents(this.getInventory());
 
-        ItemStack[] enderchest = this.getEnderChest();
-        if (enderchest != null) {
-            player.getEnderChest().setContents(enderchest);
-        }
+        player.getEnderChest().setContents(this.getEnderChest());
+
+        player.getInventory().setArmorContents(this.getArmor());
+
+        player.getInventory().setStorageContents(this.getStorage());
+
+        player.getInventory().setExtraContents(this.getExtra());
+
         player.teleport(this.getLastLocation());
         player.setFoodLevel(this.getFoodLevel());
+        player.setGameMode(this.getGameMode());
     }
 
     public ItemStack[] getInventory() {
@@ -90,11 +98,32 @@ public class PlayerStats extends AddonData {
         this.inventory = ItemManager.ItemStackToStringList(inventory);
     }
 
-    public  ItemStack[] getEnderChest() {
+    public ItemStack[] getEnderChest() {
         return ItemManager.StringListToItemStack(this.enderChest);
     }
     public  void setEnderChest(ItemStack[] inventory) {
         this.enderChest = ItemManager.ItemStackToStringList(inventory);
+    }
+
+    public ItemStack[] getArmor() {
+        return ItemManager.StringListToItemStack(this.armor);
+    }
+    public void setArmor(ItemStack[] inventory) {
+        this.armor = ItemManager.ItemStackToStringList(inventory);
+    }
+
+    public ItemStack[] getStorage() {
+        return ItemManager.StringListToItemStack(this.storage);
+    }
+    public void setStorage(ItemStack[] inventory) {
+        this.storage = ItemManager.ItemStackToStringList(inventory);
+    }
+
+    public ItemStack[] getExtra() {
+        return ItemManager.StringListToItemStack(this.extra);
+    }
+    public void setExtra(ItemStack[] inventory) {
+        this.extra = ItemManager.ItemStackToStringList(inventory);
     }
 
     public double getMaximumHealth() {
